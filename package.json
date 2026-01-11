@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "HabitPunch - A habit tracking mobile and web application",
   "private": true,
-  "workspaces": [
-    "apps/*"
-  ],
   "scripts": {
     "dev:mobile": "cd apps/mobile && npm run start",
     "dev:web": "cd apps/web && npm run dev",

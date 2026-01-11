@@ -1,0 +1,29 @@
+{
+  "name": "habitpunch",
+  "version": "1.0.0",
+  "description": "HabitPunch - A habit tracking mobile and web application",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:mobile": "cd apps/mobile && npm run start",
+    "dev:web": "cd apps/web && npm run dev",
+    "install:mobile": "cd apps/mobile && npm install",
+    "install:web": "cd apps/web && npm install",
+    "install:all": "npm run install:mobile && npm run install:web",
+    "clean:mobile": "cd apps/mobile && npx expo start --clear",
+    "lint": "echo \"Linting not configured yet\"",
+    "test": "echo \"Testing not configured yet\""
+  },
+  "keywords": ["habit-tracker", "react-native", "expo", "mobile-app"],
+  "author": "HabitPunch Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

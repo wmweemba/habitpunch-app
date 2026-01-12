@@ -5,6 +5,65 @@ All notable changes to the HabitPunch project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-01-12
+
+### Added - Production Monetization Configuration
+- **RevenueCat Production Setup**:
+  - Added live RevenueCat API key configuration (`goog_SWjDQARhamdHehzOCNtDyhZgItS`)
+  - Implemented automatic environment detection using `__DEV__` flag
+  - Created `getApiKey()` helper for automatic test/production key selection
+  - Development builds automatically use test key, production builds use live key
+  
+- **AdMob Production Setup**:
+  - Configured live production ad unit IDs for banner and rewarded ads
+  - Banner Ad: `ca-app-pub-80272982574173/9825322382`
+  - Rewarded Ad: `ca-app-pub-80272982574173/6855366500`
+  - App ID: `ca-app-pub-80272982574173~9673101538`
+  - Implemented automatic environment detection for safe development
+
+- **App Configuration Enhancements** (app.json):
+  - Added `slug`: "habitpunch"
+  - Added app description for store listings
+  - Added `primaryColor`: "#FF6B35" (brand orange)
+  - Added `backgroundColor`: "#FF6B35"
+  - Added `assetBundlePatterns` for proper asset bundling
+  - Added iOS `bundleIdentifier`: "com.habitpunch.app"
+  - Added iOS `buildNumber`: "1.0.0"
+  - Added Android `versionCode`: 1
+  - Added `expo-notifications` plugin for push notifications
+  - Added EAS project configuration
+  - Added update configuration with `fallbackToCacheTimeout`: 0
+  - Added app scheme: "habitpunch" for deep linking
+  - Added splash screen configuration
+
+### Changed
+- **Monetization Mode**: Switched from test-only to production-ready configuration
+  - RevenueCat: Now uses live API key in production builds
+  - AdMob: Now uses live ad units in production builds
+  - Both systems automatically use test mode in development (`__DEV__ = true`)
+  
+- **Configuration Updates**:
+  - Updated `admob.js`: Replaced `testMode` flag with `isDevelopment: __DEV__`
+  - Updated `revenueCat.js`: Separated test and live keys with automatic selection
+  - Enhanced logging to indicate current mode (TEST/PRODUCTION)
+
+### Production Readiness
+- ✅ Live RevenueCat API key configured and active
+- ✅ Live AdMob ad units configured and active
+- ✅ Automatic test/production mode switching implemented
+- ✅ App metadata complete for store submission
+- ✅ Version 1.0.0 / versionCode 1 / buildNumber 1.0.0
+- ✅ All required permissions configured
+- ✅ EAS build configuration ready
+- ✅ No debug flags in production builds
+
+### Notes
+- Development builds remain safe with automatic test mode
+- Production builds will use live monetization automatically
+- Ready for EAS build and TestFlight/Play Store testing
+
+---
+
 ## [1.0.1] - 2026-01-11
 
 ### Added

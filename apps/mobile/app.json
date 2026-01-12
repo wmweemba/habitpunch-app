@@ -1,13 +1,27 @@
 {
   "expo": {
     "name": "HabitPunch",
+    "slug": "habitpunch",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
+    "backgroundColor": "#FF6B35",
+    "primaryColor": "#FF6B35",
+    "description": "Build habits the fun way with satisfying punch cards. Track streaks, punch daily, and share your progress!",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.habitpunch.app",
+      "buildNumber": "1.0.0",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -21,7 +35,8 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
-      "package": "com.habitpunch.app"
+      "package": "com.habitpunch.app",
+      "versionCode": 1
     },
     "plugins": [
       [
@@ -57,7 +72,8 @@
       "expo-font",
       "expo-secure-store",
       "expo-web-browser",
-      "expo-asset"
+      "expo-asset",
+      "expo-notifications"
     ],
     "web": {
       "bundler": "metro",
@@ -69,10 +85,20 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "habitpunch-app"
       }
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/habitpunch-app"
     },
     "runtimeVersion": {
       "policy": "appVersion"
-    }
+    },
+    "privacy": "public",
+    "scheme": "habitpunch",
+    "owner": "habitpunch"
   }
 }

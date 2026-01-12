@@ -3,18 +3,28 @@ import Purchases, { LOG_LEVEL } from "react-native-purchases";
 import { Platform } from "react-native";
 
 // RevenueCat Configuration
-// IMPORTANT: Using TEST MODE key for safe preview/testing
-// Switch to production key before publishing to App Store
+// NOW USING PRODUCTION MODE - automatically switches to test in development
 const REVENUE_CAT_CONFIG = {
-  // TEST MODE - Safe for development and testing
-  publicKey: "test_LXNTHAIbYEWItFjLQVyQhnbwSb",
+  // Automatically use test mode in development, production mode in release builds
+  isDevelopment: __DEV__,
+  
+  // Test API Key (used automatically in development builds)
+  testKey: "test_LXNTHAIbYEWItFjLQVyQhnbwSb",
+  
+  // LIVE RevenueCat API Key (used in production/release builds)
+  // From RevenueCat Dashboard: Project Settings → API Keys → Public app-specific API keys
+  liveKey: "goog_SWjDQARhamdHehzOCNtDyhZgItS", // ✅ Production key configured
+  
+  // Product configuration (same for both test and production)
   productId: "habitpunch_premium_lifetime",
   entitlementId: "premium",
+};
 
-  // TO USE PRODUCTION:
-  // 1. Replace with production key from RevenueCat dashboard
-  // 2. Ensure product is configured in App Store Connect
-  // 3. Test with TestFlight before release
+// Get the appropriate API key based on environment
+const getApiKey = () => {
+  return REVENUE_CAT_CONFIG.isDevelopment 
+    ? REVENUE_CAT_CONFIG.testKey 
+    : REVENUE_CAT_CONFIG.liveKey;
 };
 
 let isConfigured = false;
@@ -30,16 +40,21 @@ export const initializeRevenueCat = async (setPermanentPremium) => {
       return true;
     }
 
-    // Enable debug logging in development
-    Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+    // Enable debug logging in development only
+    if (REVENUE_CAT_CONFIG.isDevelopment) {
+      Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+    }
 
-    // Configure with test key (works in development/preview)
+    const apiKey = getApiKey();
+    const mode = REVENUE_CAT_CONFIG.isDevelopment ? "TEST" : "PRODUCTION";
+    
+    // Configure with environment-appropriate key
     Purchases.configure({
-      apiKey: REVENUE_CAT_CONFIG.publicKey,
+      apiKey: apiKey,
     });
 
     isConfigured = true;
-    console.log("✅ RevenueCat initialized successfully");
+    console.log(`✅ RevenueCat initialized successfully (${mode} mode)`);
 
     // Check initial premium status
     if (setPermanentPremium) {

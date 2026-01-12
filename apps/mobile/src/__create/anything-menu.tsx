@@ -34,6 +34,8 @@ import { NativeModule, requireNativeModule } from "expo-modules-core";
 import { MotiView } from "moti";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WebView } from "react-native-webview";
+import { clearAllData } from "../utils/habitStorage";
+import { Alert } from "react-native";
 
 declare class AnythingLauncherModule extends NativeModule {
   open(url: string): Promise<void>;
@@ -291,6 +293,37 @@ const AnythingMenu = isAnythingApp
       dispatch({ type: 'TOGGLE_WEB_VIEW' });
     }, []);
 
+    const clearAppData = useCallback(async () => {
+      Alert.alert(
+        "Clear All Data",
+        "This will reset the app to first launch state. All habits and progress will be deleted. Continue?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel"
+          },
+          {
+            text: "Clear All Data",
+            style: "destructive",
+            onPress: async () => {
+              const success = await clearAllData();
+              if (success) {
+                // Close menu first
+                menuProgress.value = withTiming(0, {
+                  duration: 300,
+                  easing: Easing.ease,
+                });
+                // Reload app after brief delay
+                setTimeout(() => {
+                  AnythingLauncher?.reload();
+                }, 500);
+              }
+            }
+          }
+        ]
+      );
+    }, []);
+
     const animatedStyle = useAnimatedStyle(() => {
       const scale = interpolate(menuProgress.value, [0, 1], [1, 0.9]);
       const shadowOpacity = interpolate(menuProgress.value, [0, 1], [0, 0.4]);
@@ -419,6 +452,12 @@ const AnythingMenu = isAnythingApp
                   style={menuStyles.button}
                 >
                   <RefreshIcon />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={clearAppData}
+                  style={menuStyles.button}
+                >
+                  <Text style={{ fontSize: 18 }}>🗑️</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={exitApp} style={menuStyles.button}>
                   <CloseIcon />

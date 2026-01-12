@@ -84,21 +84,19 @@
     },
     "extra": {
       "router": {
-        "origin": false
+        "origin": false,
+        "sitemap": false
       },
       "eas": {
-        "projectId": "habitpunch-app"
+        "projectId": "30093ce3-f4d8-4e4f-867c-c39bfae5dd84"
       }
     },
     "updates": {
-      "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/habitpunch-app"
+      "fallbackToCacheTimeout": 0
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
-    "privacy": "public",
-    "scheme": "habitpunch",
-    "owner": "habitpunch"
+    "scheme": "habitpunch"
   }
 }

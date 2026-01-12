@@ -13,7 +13,7 @@ const REVENUE_CAT_CONFIG = {
   
   // LIVE RevenueCat API Key (used in production/release builds)
   // From RevenueCat Dashboard: Project Settings → API Keys → Public app-specific API keys
-  liveKey: "goog_SWjDQARhamdHehzOCNtDyhZgItS", // ✅ Production key configured
+  liveKey: "gooog_SWJDQARhamdHehzOCNtDyhZgItS", // ✅ Production key configured
   
   // Product configuration (same for both test and production)
   productId: "habitpunch_premium_lifetime",
@@ -213,7 +213,12 @@ export const getPremiumPrice = async () => {
     const pkg = offerings.current.availablePackages[0];
     return pkg.product.priceString || "$4.99";
   } catch (error) {
-    console.error("Error getting price:", error);
+    // Expected error in development if product isn't configured in RevenueCat dashboard
+    if (REVENUE_CAT_CONFIG.isDevelopment) {
+      console.warn("⚠️ RevenueCat product not configured (using fallback price in development)");
+    } else {
+      console.error("Error getting price:", error);
+    }
     return "$4.99"; // Fallback price
   }
 };

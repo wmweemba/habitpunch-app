@@ -146,7 +146,33 @@ npm run install:web         # Install web dependencies only
 
 ## 🏗️ Build & Deploy
 
-### Mobile App
+### Mobile App (EAS Build)
+
+```bash
+cd apps/mobile
+
+# One-time setup
+npm install -g eas-cli
+eas login
+eas build:configure
+
+# Development build (for testing on real devices)
+eas build --platform android --profile development
+eas build --platform ios --profile development
+
+# Production build (for app store submission)
+eas build --platform android --profile production
+eas build --platform ios --profile production
+
+# Build for both platforms
+eas build --platform all --profile production
+
+# Submit to stores
+eas submit --platform android
+eas submit --platform ios
+```
+
+### Legacy Expo Build (Deprecated)
 
 ```bash
 cd apps/mobile
@@ -154,9 +180,6 @@ cd apps/mobile
 # Development build
 npx expo build:ios
 npx expo build:android
-
-# Production build with EAS
-npx eas build --platform all
 ```
 
 ### Web App
@@ -165,6 +188,24 @@ npx eas build --platform all
 cd apps/web
 npm run build
 ```
+
+---
+
+## 🛠️ Developer Tools
+
+### Clear App Data (for Screenshots)
+
+The app includes a developer menu for testing and screenshot capture:
+
+1. **Open Dev Menu**: Hold two fingers on the screen for ~0.5 seconds
+2. **Clear All Data**: Tap the 🗑️ button
+3. **Confirm**: Accept the confirmation dialog
+4. **App Resets**: Returns to onboarding screen as if first launch
+
+This is useful for:
+- Taking fresh onboarding screenshots
+- Testing first-time user experience
+- Resetting app state during development
 
 ---
 

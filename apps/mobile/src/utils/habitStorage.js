@@ -294,3 +294,22 @@ export const isPermanentPremium = async () => {
     return false;
   }
 };
+
+// Clear all app data (for testing/screenshots)
+export const clearAllData = async () => {
+  try {
+    await AsyncStorage.multiRemove([
+      STORAGE_KEYS.HABITS,
+      STORAGE_KEYS.ONBOARDING_COMPLETE,
+      STORAGE_KEYS.PREMIUM_STATUS,
+      STORAGE_KEYS.PREMIUM_EXPIRY,
+      STORAGE_KEYS.PREMIUM_PERMANENT,
+      "hasSeenOnboarding", // AnythingMenu key
+    ]);
+    console.log("✅ All app data cleared successfully");
+    return true;
+  } catch (error) {
+    console.error("❌ Error clearing app data:", error);
+    return false;
+  }
+};

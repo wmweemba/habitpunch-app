@@ -5,6 +5,40 @@ All notable changes to the HabitPunch project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2026-01-12
+
+### Added - EAS Build Configuration & Developer Tools
+- **EAS Build Setup**:
+  - Installed and configured EAS CLI for production builds
+  - Created EAS project: `@wmweemba/habitpunch`
+  - Generated `eas.json` with development, preview, and production build profiles
+  - Project ID: `30093ce3-f4d8-4e4f-867c-c39bfae5dd84`
+  - Configured for both iOS and Android platforms
+  - Production profile includes auto-increment for build numbers
+
+- **Developer Tools**:
+  - Added `clearAllData()` function to `habitStorage.js` for resetting app to first launch state
+  - Added 🗑️ clear data button to dev menu (AnythingMenu) for taking onboarding screenshots
+  - Clear data resets: habits, onboarding status, premium status, and all app settings
+  - Automatic app reload after data clear
+
+### Changed
+- **RevenueCat Configuration**:
+  - Updated live API key from `goog_SWjDQARhamdHehzOCNtDyhZgItS` to `gooog_SWJDQARhamdHehzOCNtDyhZgItS` (corrected key)
+  - Maintained automatic test/production environment switching
+
+### Fixed
+- **App Configuration Issues**:
+  - Removed invalid `privacy` field from `app.json` (not supported in Expo SDK 54)
+  - Removed hardcoded `owner` field to allow proper EAS authentication
+  - Removed invalid `projectId` placeholder, replaced with EAS-generated UUID
+  - Removed invalid `updates.url` that referenced non-existent project
+
+### Developer Experience
+- App can now be reset to fresh install state via dev menu for screenshot capture
+- EAS build system ready for creating production APK/AAB for Google Play Store
+- Development builds can be created to test custom app icon display
+
 ## [1.0.2] - 2026-01-12
 
 ### Added - Production Monetization Configuration

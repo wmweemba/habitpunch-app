@@ -233,12 +233,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Known Issues
 - Some Expo packages slightly behind latest versions (non-critical, warnings only)
-- Ad system using test/simulation mode (requires production AdMob setup)
-- RevenueCat payments using test mode (requires App Store Connect setup)
+- Duplicate dependencies in node_modules (non-blocking for EAS builds)
+- Custom app icon won't display in Expo Go (architectural limitation, shows in production builds)
 
-### Next Steps
-- [ ] Prepare for production build configuration
-- [ ] Set up App Store Connect and configure IAP products
-- [ ] Configure production RevenueCat API keys
-- [ ] Integrate production AdMob rewarded video ads
-- [ ] Test with TestFlight before release
+### Completed Production Setup ✅
+- ✅ EAS Build configured with production profile
+- ✅ Production RevenueCat API key configured (`gooog_SWJDQARhamdHehzOCNtDyhZgItS`)
+- ✅ Production AdMob ad units configured
+- ✅ Android Keystore generated and stored by EAS
+- ✅ First production build completed (AAB ready)
+- ✅ Screenshots captured for store listing
+
+### Next Steps - App Store Submission
+- [ ] **Google Play Console Setup**:
+  - [ ] Create app listing on Google Play Console
+  - [ ] Upload production AAB (https://expo.dev/artifacts/eas/dXmR4ZeHtxPYm2sqMkqfnt.aab)
+  - [ ] Complete store listing (screenshots, description, privacy policy)
+  - [ ] Configure RevenueCat product in Play Console (`habitpunch_premium_lifetime`)
+  - [ ] Submit for review and publish
+
+- [x] **RevenueCat Dashboard Configuration**:
+  - [x] Create product offering for `habitpunch_premium_lifetime`
+  - [x] Link Google Play Store product to RevenueCat
+  - [x] Test in-app purchases in production environment
+
+- [ ] **iOS Build & Submission** (Optional):
+  - [ ] Run `eas build --platform ios --profile production`
+  - [ ] Set up App Store Connect listing
+  - [ ] Configure IAP products in App Store Connect
+  - [ ] Submit for App Store review

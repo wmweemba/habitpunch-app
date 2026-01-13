@@ -215,7 +215,7 @@ Users between the ages of 13 and 18 should use HabitPunch with parental or guard
 
 ## 9. International Data Transfers
 
-HabitPunch is developed and operated from [YOUR COUNTRY]. If you are located outside [YOUR COUNTRY], please be aware that:
+HabitPunch is developed and operated from Zambia. If you are located outside Zambia, please be aware that:
 
 - Your information may be transferred to and processed in countries other than your own
 - These countries may have different data protection laws than your country
@@ -318,4 +318,4 @@ This Privacy Policy is designed to comply with:
 
 **© 2026 HabitPunch. All rights reserved.**
 
-For the most up-to-date version of this Privacy Policy, please visit: [YOUR_PRIVACY_POLICY_URL]
+For the most up-to-date version of this Privacy Policy, please visit: https://github.com/wmweemba/habitpunch-app/blob/main/PRIVACY_POLICY.md

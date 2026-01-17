@@ -61,10 +61,10 @@ config.watchFolders = [__dirname, VIRTUAL_ROOT, VIRTUAL_ROOT_UNRESOLVED];
 config.resolver = {
   ...config.resolver,
   blockList: [
-    // Block parent node_modules to prevent Metro from trying to watch them
-    /.*\/node_modules\/.*\/node_modules\/.*/,
-    // Block any parent directory node_modules
-    new RegExp(path.resolve(__dirname, '../../node_modules') + '/.*'),
+    // Block nested node_modules but allow core React Native resolution
+    /.*\/node_modules\/.*\/node_modules\/(?!react-native|@react-native|expo|metro).*/,
+    // Block parent directory node_modules except for workspace-level packages
+    new RegExp(path.resolve(__dirname, '../../node_modules') + '/(?!react-native|@react-native|expo|metro).*'),
   ],
 };
 
@@ -79,6 +79,12 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
     ) {
       return context.resolveRequest(context, moduleName, platform);
     }
+    
+    // Allow all React Native core modules to pass through without aliasing
+    if (moduleName.startsWith('@react-native/') || moduleName === 'react-native') {
+      return context.resolveRequest(context, moduleName, platform);
+    }
+    
     // Wildcard alias for Expo Google Fonts
     if (moduleName.startsWith('@expo-google-fonts/') && moduleName !== '@expo-google-fonts/dev') {
       return context.resolveRequest(context, '@expo-google-fonts/dev', platform);
@@ -99,6 +105,15 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
     }
     return context.resolveRequest(context, moduleName, platform);
   } catch (error) {
+    // In production, try default resolution first before error handling
+    if (process.env.NODE_ENV === 'production') {
+      try {
+        return context.resolveRequest(context, moduleName, platform);
+      } catch (fallbackError) {
+        // Only handle error if default resolution also fails
+        return handleResolveRequestError({ error: fallbackError, context, platform, moduleName });
+      }
+    }
     return handleResolveRequestError({ error, context, platform, moduleName });
   }
 };

@@ -13,8 +13,19 @@ const handleResolveRequestError = ({ error, context, moduleName, platform }) => 
   reportErrorToRemote({ error: syntheticError }).catch((reportError) => {
     // no-op
   });
-  if (process.env.NODE_ENV === 'production') throw error;
-  if (platform !== 'web') throw error;
+  
+  // In production, only throw for critical modules that must be resolved
+  if (process.env.NODE_ENV === 'production') {
+    // Allow these to fail gracefully in production by creating virtual file
+    if (platform === 'web' && !moduleName.startsWith('@react-native/') && !moduleName.startsWith('react-native')) {
+      // Continue to virtual file creation for web polyfills
+    } else {
+      // For native builds and core RN modules, throw the error to fail fast
+      throw error;
+    }
+  }
+  
+  if (platform !== 'web' && process.env.NODE_ENV !== 'production') throw error;
 
   // Build a deterministic virtual file path for this failed request
   const key = `${moduleName}|${context.originModulePath}|${platform}`;

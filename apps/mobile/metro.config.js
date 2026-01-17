@@ -61,10 +61,10 @@ config.watchFolders = [__dirname, VIRTUAL_ROOT, VIRTUAL_ROOT_UNRESOLVED];
 config.resolver = {
   ...config.resolver,
   blockList: [
-    // Block nested node_modules but allow core React Native resolution
-    /.*\/node_modules\/.*\/node_modules\/(?!react-native|@react-native|expo|metro).*/,
+    // Block nested node_modules but allow core React Native, Expo, and Metro resolution
+    /.*\/node_modules\/.*\/node_modules\/(?!react-native|@react-native|expo|@expo|metro).*/,
     // Block parent directory node_modules except for workspace-level packages
-    new RegExp(path.resolve(__dirname, '../../node_modules') + '/(?!react-native|@react-native|expo|metro).*'),
+    new RegExp(path.resolve(__dirname, '../../node_modules') + '/(?!react-native|@react-native|expo|@expo|metro).*'),
   ],
 };
 

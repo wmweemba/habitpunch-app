@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npx expo start",
+    "build:android:dev": "eas build --platform android --profile development",
+    "build:android:preview": "eas build --platform android --profile preview",
+    "build:android:prod": "eas build --platform android --profile production",
     "start:tunnel": "npx expo start --tunnel",
     "start:lan": "npx expo start --lan",
     "postinstall": "patch-package"
@@ -36,6 +39,7 @@
     "expo-clipboard": "~8.0.6",
     "expo-constants": "~18.0.8",
     "expo-contacts": "~15.0.8",
+    "expo-dev-client": "~6.0.20",
     "expo-device": "~8.0.6",
     "expo-document-picker": "~14.0.6",
     "expo-file-system": "~19.0.21",

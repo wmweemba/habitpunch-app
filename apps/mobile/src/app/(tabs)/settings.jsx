@@ -217,11 +217,21 @@ export default function SettingsScreen() {
         {
           text: "Rate",
           onPress: () => {
-            // Linking.openURL('itms-apps://itunes.apple.com/app/id...'); // iOS
-            Alert.alert(
-              "Feature Coming Soon",
-              "App Store link will be added after publishing.",
-            );
+            try {
+              const androidUrl = 'market://details?id=com.habitpunch.app';
+              const webUrl = 'https://play.google.com/store/apps/details?id=com.habitpunch.app';
+              if (Platform.OS === 'android') {
+                Linking.openURL(androidUrl).catch(() => Linking.openURL(webUrl));
+              } else if (Platform.OS === 'ios') {
+                // iOS App Store id not yet set; open web fallback to Play Store page for now
+                const iosWeb = webUrl;
+                Linking.openURL(iosWeb);
+              } else {
+                Linking.openURL(webUrl);
+              }
+            } catch (e) {
+              Alert.alert('Error', 'Unable to open store link.');
+            }
           },
         },
       ],
@@ -230,9 +240,10 @@ export default function SettingsScreen() {
 
   const handleShareApp = async () => {
     try {
+      const playStoreUrl = "https://play.google.com/store/apps/details?id=com.habitpunch.app";
       await Share.share({
         message:
-          "🔥 Check out HabitPunch! Build better habits the fun way with punch cards. Download now!",
+          `🔥 Check out HabitPunch! Build better habits the fun way with punch cards. Download now: ${playStoreUrl}`,
       });
     } catch (error) {
       console.error("Error sharing:", error);

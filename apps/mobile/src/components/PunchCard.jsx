@@ -185,8 +185,9 @@ export default function PunchCard({
   const handleShare = async () => {
     setShowMenu(false);
     try {
+      const playStoreUrl = "https://play.google.com/store/apps/details?id=com.habitpunch.app";
       await Share.share({
-        message: `🎉 I've completed ${progress}/30 days of "${habit.name}" on HabitPunch! ${habit.icon}\n\nJoin me in building better habits!`,
+        message: `🎉 I've completed ${progress}/30 days of "${habit.name}" on HabitPunch! ${habit.icon}\n\nJoin me in building better habits!\n\nGet HabitPunch: ${playStoreUrl}`,
       });
     } catch (error) {
       console.error("Error sharing:", error);

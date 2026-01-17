@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "30093ce3-f4d8-4e4f-867c-c39bfae5dd84"
+      }
+    },
+    "owner": "wmweemba",
+    "android": {
+      "package": "com.wmweemba.habitpunch"
+    }
+  }
+}

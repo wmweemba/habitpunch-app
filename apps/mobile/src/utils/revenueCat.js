@@ -165,11 +165,12 @@ export const purchasePremium = async (setPermanentPremium) => {
     console.error("Error purchasing premium:", error);
 
     // Check if user cancelled
-    if (error.userCancelled) {
+    if (error && error.userCancelled) {
       return { success: false, cancelled: true };
     }
 
-    throw error;
+    // Return structured error to caller so UI can show actionable message
+    return { success: false, cancelled: false, errorMessage: error.message || String(error) };
   }
 };
 

@@ -5,6 +5,41 @@ All notable changes to the HabitPunch project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-01-17
+
+### Fixed - Production App Store Issues
+- **App Store Functionality Fixes**:
+  - Fixed rating functionality: Now opens Google Play Store instead of "feature coming soon" message
+  - Added Play Store download links to app sharing functionality in both PunchCard and Settings
+  - Improved RevenueCat error handling: Now returns structured error results instead of throwing exceptions
+  - Implemented AdMob fallback system: Shows placeholders when native ads unavailable (Expo managed builds)
+
+- **Build System Critical Fixes**:
+  - Fixed EAS build failures caused by running from wrong directory (root vs apps/mobile)
+  - Removed conflicting configuration files from monorepo root (app.json, eas.json)
+  - Fixed failing sonner-native patch for version 0.21.2 (web compatibility for toast notifications)
+  - Updated all patch files to match installed package versions, eliminating warnings
+
+- **Package Dependencies Cleanup**:
+  - Updated @expo/cli patch: 54.0.1 → 54.0.21
+  - Updated @expo/metro-runtime patch: 6.1.1 → 6.1.2  
+  - Updated expo-router patch: 6.0.0 → 6.0.21
+  - Updated metro-runtime patch: 0.83.1 → 0.83.3
+  - Updated react-native-purchases patch: 9.6.1 → 9.7.1
+  - Updated react-native-purchases-ui patch: 9.6.1 → 9.7.1
+  - Regenerated sonner-native patch: 0.21.0 → 0.21.2
+
+### Changed
+- **Development Builds**:
+  - Successfully created development APK: Build `684d7ecb-a899-43d1-91b6-c800f0e77723`
+  - All EAS build commands now run from correct apps/mobile directory
+  - Clean patch application with zero version warnings
+
+### Developer Experience
+- Development builds now install successfully on Android devices for testing
+- Clean build environment with properly versioned patches
+- Eliminated all dependency version mismatch warnings
+
 ## [1.0.4] - 2026-01-12
 
 ### Production Release

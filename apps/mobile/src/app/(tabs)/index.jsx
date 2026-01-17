@@ -311,8 +311,8 @@ export default function HomeScreen() {
             elevation: 4,
           }}
         >
-          {/* TEST BANNER AD PLACEHOLDER */}
-          {/* TODO: Replace with actual AdMob BannerAd component */}
+          {/* Attempt to load real BannerAd dynamically if library installed. */}
+          {/* Fallback: keep placeholder so builds without the native lib still work. */}
           <View
             style={{
               height: 50,
@@ -326,15 +326,37 @@ export default function HomeScreen() {
               borderStyle: "dashed",
             }}
           >
-            <Text
-              style={{
-                fontFamily: "Montserrat_500Medium",
-                fontSize: 10,
-                color: colors.secondary,
-              }}
-            >
-              🧪 Test Banner Ad ({getBannerAdUnitId().slice(-6)})
-            </Text>
+            {(() => {
+              try {
+                // dynamic require so builds without the native module won't crash
+                // react-native-google-mobile-ads exports BannerAd and BannerAdSize
+                // only render if available at runtime
+                // eslint-disable-next-line global-require
+                const rnAds = require("react-native-google-mobile-ads");
+                const { BannerAd, BannerAdSize } = rnAds;
+                const unitId = getBannerAdUnitId();
+                return (
+                  <BannerAd
+                    unitId={unitId}
+                    size={BannerAdSize.FULL_BANNER}
+                    requestOptions={{ requestNonPersonalizedAdsOnly: false }}
+                  />
+                );
+              } catch (e) {
+                return (
+                  <Text
+                    style={{
+                      fontFamily: "Montserrat_500Medium",
+                      fontSize: 10,
+                      color: colors.secondary,
+                    }}
+                  >
+                    🧪 Test Banner Ad ({getBannerAdUnitId().slice(-6)})
+                  </Text>
+                );
+              }
+            })()}
+
             <Text
               style={{
                 fontFamily: "Montserrat_500Medium",

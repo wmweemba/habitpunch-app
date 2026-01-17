@@ -13,7 +13,12 @@
     "lint": "echo \"Linting not configured yet\"",
     "test": "echo \"Testing not configured yet\""
   },
-  "keywords": ["habit-tracker", "react-native", "expo", "mobile-app"],
+  "keywords": [
+    "habit-tracker",
+    "react-native",
+    "expo",
+    "mobile-app"
+  ],
   "author": "HabitPunch Team",
   "license": "MIT",
   "devDependencies": {
@@ -22,5 +27,8 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "expo-dev-client": "^6.0.20"
   }
 }

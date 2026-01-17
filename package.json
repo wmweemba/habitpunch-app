@@ -22,7 +22,9 @@
   "author": "HabitPunch Team",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "@types/react": "~19.1.10",
+    "typescript": "~5.9.2"
   },
   "engines": {
     "node": ">=18.0.0",

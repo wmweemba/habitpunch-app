@@ -5,6 +5,45 @@ All notable changes to the HabitPunch project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] - 2026-01-18
+
+### Fixed - AdMob and RevenueCat Production Configuration
+- **AdMob Integration**:
+  - Updated production AdMob IDs to correct values from verified AdMob account
+    - App ID: `ca-app-pub-8027298257417325~2646520577`
+    - Banner Ad Unit: `ca-app-pub-8027298257417325/7395643745`  
+    - Rewarded Ad Unit: `ca-app-pub-8027298257417325/5890990380`
+  - Added react-native-google-mobile-ads plugin configuration with correct androidAppId to app.json
+  - Implemented real rewarded ad functionality using AdMob RewardedAd API
+  - Replaced mock ad implementation with actual rewarded video ads for 24h premium unlock
+
+- **RevenueCat Configuration**:
+  - Fixed API key typo: `gooog_SWjDQARhamdHehzOCNtDyhZgItS` → `goog_SWjDQARhamdHehzOCNtDyhZgItS`
+  - Added RevenueCat App ID configuration: `appaea277d857`
+  - Enhanced RevenueCat initialization with improved configuration options
+  - Added proper error handling for rewarded ad loading and display
+
+- **Domain Verification Setup**:
+  - Created and hosted app-ads.txt file on mynexusgroup.com domain
+  - Updated Google Play Console developer website field for AdMob verification
+  - Set up proper domain verification for production ad serving
+
+### Changed
+- **User Experience Improvements**:
+  - Removed "Made with Anything" branding references from settings and about dialog
+  - Upgraded rewarded ad experience from mock alerts to real video ads
+  - Enhanced error messaging for ad loading failures
+
+- **Production Monetization**:
+  - Created `habitpunch_premium_lifetime` in-app purchase product in Google Play Console
+  - Configured lifetime premium purchase flow with RevenueCat integration
+  - Set up proper entitlement mapping between RevenueCat and Google Play
+
+### Technical
+- AdMob verification propagation in progress (24-48 hours expected)
+- Real ads will show once domain verification completes
+- RevenueCat integration now properly configured with production API keys and App ID
+
 ## [1.0.5] - 2026-01-17
 
 ### Fixed - Production App Store Issues

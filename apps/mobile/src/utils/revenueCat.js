@@ -13,7 +13,10 @@ const REVENUE_CAT_CONFIG = {
   
   // LIVE RevenueCat API Key (used in production/release builds)
   // From RevenueCat Dashboard: Project Settings → API Keys → Public app-specific API keys
-  liveKey: "gooog_SWJDQARhamdHehzOCNtDyhZgItS", // ✅ Production key configured
+  liveKey: "goog_SWjDQARhamdHehzOCNtDyhZgItS", // ✅ Production key configured
+  
+  // App configuration
+  appId: "appaea277d857", // RevenueCat App ID from dashboard
   
   // Product configuration (same for both test and production)
   productId: "habitpunch_premium_lifetime",
@@ -51,6 +54,10 @@ export const initializeRevenueCat = async (setPermanentPremium) => {
     // Configure with environment-appropriate key
     Purchases.configure({
       apiKey: apiKey,
+      appUserId: null, // Let RevenueCat auto-generate anonymous user IDs
+      observerMode: false, // We want RevenueCat to handle purchases
+      userDefaultsSuiteName: null,
+      useStoreKit2IfAvailable: true, // Use latest StoreKit on iOS
     });
 
     isConfigured = true;

@@ -1,6 +1,9 @@
 // AdMob Integration for HabitPunch
 // NOW USING PRODUCTION ADs - automatically switches to test in development
 
+import { Platform } from 'react-native';
+import { InterstitialAd, AdEventType, TestIds, RewardedAd, RewardedAdEventType } from 'react-native-google-mobile-ads';
+
 /**
  * ADMOB CONFIGURATION
  *
@@ -17,10 +20,10 @@ export const ADMOB_CONFIG = {
   testRewardedAdUnitId: "ca-app-pub-3940256099942544/5224354917",
 
   // PRODUCTION Ad Unit IDs (LIVE - from AdMob account)
-  // These are now active and will be used in release builds
-  prodAppId: "ca-app-pub-80272982574173~9673101538",
-  prodBannerAdUnitId: "ca-app-pub-80272982574173/9825322382", // LIVE Banner Ad
-  prodRewardedAdUnitId: "ca-app-pub-80272982574173/6855366500", // LIVE Rewarded Ad
+  // Updated with correct IDs from verified AdMob account
+  prodAppId: "ca-app-pub-8027298257417325~2646520577",
+  prodBannerAdUnitId: "ca-app-pub-8027298257417325/7395643745", // LIVE Banner Ad
+  prodRewardedAdUnitId: "ca-app-pub-8027298257417325/5890990380", // LIVE Rewarded Ad
 };
 
 /**
@@ -75,3 +78,70 @@ export const getRewardedAdUnitId = () => {
  *
  * Note: Development builds use Google test ads automatically
  */
+
+// Rewarded Ad Functionality
+let rewardedAd = null;
+
+export const initializeRewardedAd = () => {
+  const adUnitId = getRewardedAdUnitId();
+  
+  if (rewardedAd) {
+    rewardedAd = null; // Clean up existing ad
+  }
+  
+  rewardedAd = RewardedAd.createForAdRequest(adUnitId, {
+    requestNonPersonalizedAdsOnly: false,
+    keywords: ['habits', 'productivity', 'self-improvement']
+  });
+
+  return rewardedAd;
+};
+
+export const showRewardedAd = ({ onReward, onError }) => {
+  return new Promise((resolve, reject) => {
+    if (!rewardedAd) {
+      rewardedAd = initializeRewardedAd();
+    }
+
+    const unsubscribeLoaded = rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      console.log('✅ Rewarded ad loaded successfully');
+      rewardedAd.show();
+    });
+
+    const unsubscribeEarned = rewardedAd.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward) => {
+        console.log('🎉 User earned reward:', reward);
+        onReward && onReward(reward);
+        resolve(reward);
+      }
+    );
+
+    const unsubscribeClosed = rewardedAd.addAdEventListener(RewardedAdEventType.DISMISSED, () => {
+      console.log('❌ Rewarded ad dismissed');
+      // Clean up listeners
+      unsubscribeLoaded();
+      unsubscribeEarned();
+      unsubscribeClosed();
+      unsubscribeError();
+      
+      // Initialize new ad for next time
+      rewardedAd = initializeRewardedAd();
+    });
+
+    const unsubscribeError = rewardedAd.addAdEventListener('ad_error', (error) => {
+      console.error('❌ Rewarded ad error:', error);
+      onError && onError(error);
+      reject(error);
+      
+      // Clean up listeners
+      unsubscribeLoaded();
+      unsubscribeEarned();
+      unsubscribeClosed();
+      unsubscribeError();
+    });
+
+    // Load and show the ad
+    rewardedAd.load();
+  });
+};

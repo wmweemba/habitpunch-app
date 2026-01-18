@@ -69,6 +69,12 @@
           "supportsPictureInPicture": true
         }
       ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-8027298257417325~2646520577"
+        }
+      ],
       "expo-font",
       "expo-secure-store",
       "expo-web-browser",

@@ -174,37 +174,41 @@ export default function SettingsScreen() {
     }
   };
 
-  const handleWatchRewardedAd = () => {
-    // TODO: Implement AdMob rewarded video ad
-    // For now, simulate the reward for testing
-    Alert.alert(
-      "🎁 Watch Ad for 24h Premium",
-      "Watch a short video to unlock premium features for 24 hours!",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Watch",
-          onPress: async () => {
-            // TEMPORARY: Simulate ad reward for testing
-            // Replace this with actual AdMob rewarded ad implementation
-            try {
-              await setTemporaryPremium(24);
-              await loadPremiumStatus();
-              Alert.alert(
-                "Premium Unlocked! 🎉",
-                "You now have premium features for 24 hours. Enjoy!",
-              );
-            } catch (error) {
-              console.error("Error setting temporary premium:", error);
-              Alert.alert(
-                "Error",
-                "Failed to unlock premium. Please try again.",
-              );
-            }
-          },
+  const handleWatchRewardedAd = async () => {
+    try {
+      const { showRewardedAd } = await import('../../utils/admob');
+      await showRewardedAd({
+        onReward: async () => {
+          try {
+            await setTemporaryPremium(24);
+            await loadPremiumStatus();
+            Alert.alert(
+              "Premium Unlocked! 🎉",
+              "You now have premium features for 24 hours. Enjoy!",
+            );
+          } catch (error) {
+            console.error("Error setting temporary premium:", error);
+            Alert.alert(
+              "Error",
+              "Failed to unlock premium. Please try again.",
+            );
+          }
         },
-      ],
-    );
+        onError: (error) => {
+          console.error('Rewarded ad error:', error);
+          Alert.alert(
+            "Ad Not Available",
+            "Unable to load ad at the moment. Please try again later.",
+          );
+        }
+      });
+    } catch (error) {
+      console.error("Error loading rewarded ad:", error);
+      Alert.alert(
+        "Error",
+        "Unable to load rewarded ad. Please check your connection.",
+      );
+    }
   };
 
   const handleRateApp = () => {
@@ -253,7 +257,7 @@ export default function SettingsScreen() {
   const handleAbout = () => {
     Alert.alert(
       "About HabitPunch",
-      "Version 1.0.0\n\nBuild habits the fun way with satisfying punch cards!\n\nMade with ❤️ on Anything",
+      "Version 1.0.0\n\nBuild habits the fun way with satisfying punch cards!",
       [{ text: "OK" }],
     );
   };
@@ -606,7 +610,7 @@ export default function SettingsScreen() {
             lineHeight: 18,
           }}
         >
-          Made with ❤️ on Anything{"\n"}© 2026 HabitPunch
+          © 2026 HabitPunch
         </Text>
       </ScrollView>
     </View>

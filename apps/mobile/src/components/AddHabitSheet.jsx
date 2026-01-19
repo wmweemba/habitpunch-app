@@ -8,6 +8,7 @@ import {
   ScrollView,
   Switch,
   Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -92,16 +93,21 @@ export default function AddHabitSheet({
       presentationStyle="pageSheet"
       onRequestClose={handleClose}
     >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-        }}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
-        {/* Header */}
         <View
           style={{
-            paddingTop: insets.top + 16,
+            flex: 1,
+            backgroundColor: colors.background,
+          }}
+        >
+          {/* Header */}
+          <View
+            style={{
+              paddingTop: insets.top + 16,
             paddingHorizontal: 20,
             paddingBottom: 16,
             backgroundColor: colors.surface,
@@ -419,8 +425,8 @@ export default function AddHabitSheet({
             >
               💡 Your punch card will have 30 days. When you complete all 30
               days, a new card will automatically start!
-            </Text>
-          </View>
+          </Text>
+        </View>
         </ScrollView>
 
         {/* Save Button */}
@@ -456,8 +462,10 @@ export default function AddHabitSheet({
               {editHabit ? "Save Changes" : "Create Habit"}
             </Text>
           </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
-  );
+);
 }
+

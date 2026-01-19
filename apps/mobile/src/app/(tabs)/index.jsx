@@ -263,7 +263,7 @@ export default function HomeScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={{
           padding: 20,
-          paddingBottom: insets.bottom + (premium ? 100 : 160),
+          paddingBottom: insets.bottom + 100, // Space for FAB and bottom banner
         }}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -290,86 +290,36 @@ export default function HomeScreen() {
         )}
       </ScrollView>
 
-      {/* Banner Ad - Only show if not premium */}
-      {!premium && habits.length > 0 && (
-        <View
-          style={{
-            position: "absolute",
-            bottom: insets.bottom + 80,
-            left: 0,
-            right: 0,
-            height: 60,
-            backgroundColor: colors.surface,
-            borderTopWidth: 1,
-            borderTopColor: colors.borderLight,
-            justifyContent: "center",
-            alignItems: "center",
-            shadowColor: "#000000",
-            shadowOffset: { width: 0, height: -2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 4,
-          }}
-        >
-          {/* Attempt to load real BannerAd dynamically if library installed. */}
-          {/* Fallback: keep placeholder so builds without the native lib still work. */}
-          <View
-            style={{
-              height: 50,
-              width: "90%",
-              backgroundColor: colors.surfaceVariant,
-              borderRadius: 8,
-              justifyContent: "center",
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: colors.borderLight,
-              borderStyle: "dashed",
-            }}
-          >
-            {(() => {
-              try {
-                // dynamic require so builds without the native module won't crash
-                // react-native-google-mobile-ads exports BannerAd and BannerAdSize
-                // only render if available at runtime
-                // eslint-disable-next-line global-require
-                const rnAds = require("react-native-google-mobile-ads");
-                const { BannerAd, BannerAdSize } = rnAds;
-                const unitId = getBannerAdUnitId();
-                return (
-                  <BannerAd
-                    unitId={unitId}
-                    size={BannerAdSize.FULL_BANNER}
-                    requestOptions={{ requestNonPersonalizedAdsOnly: false }}
-                  />
-                );
-              } catch (e) {
-                return (
-                  <Text
-                    style={{
-                      fontFamily: "Montserrat_500Medium",
-                      fontSize: 10,
-                      color: colors.secondary,
-                    }}
-                  >
-                    🧪 Test Banner Ad ({getBannerAdUnitId().slice(-6)})
-                  </Text>
-                );
-              }
-            })()}
-
-            <Text
-              style={{
-                fontFamily: "Montserrat_500Medium",
-                fontSize: 8,
-                color: colors.secondary,
-                marginTop: 2,
-              }}
-            >
-              Ad will load here in production
-            </Text>
-          </View>
-        </View>
-      )}
+      {/* Bottom Banner Ad */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: insets.bottom + 90, // Above tab bar and FAB
+          left: 0,
+          right: 0,
+          alignItems: "center",
+          paddingHorizontal: 10,
+        }}
+      >
+        {(() => {
+          try {
+            // eslint-disable-next-line global-require
+            const rnAds = require("react-native-google-mobile-ads");
+            const { BannerAd, BannerAdSize } = rnAds;
+            const unitId = getBannerAdUnitId();
+            return (
+              <BannerAd
+                unitId={unitId}
+                size={BannerAdSize.BANNER}
+                requestOptions={{ requestNonPersonalizedAdsOnly: false }}
+              />
+            );
+          } catch (e) {
+            // Fallback for development or builds without ads
+            return null;
+          }
+        })()}
+      </View>
 
       {/* Floating Add Button */}
       <Animated.View

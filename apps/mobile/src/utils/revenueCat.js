@@ -20,6 +20,7 @@ const REVENUE_CAT_CONFIG = {
   
   // Product configuration (same for both test and production)
   productId: "habitpunch_premium_lifetime",
+  productType: "inapp", // One-time purchase, not subscription
   entitlementId: "premium",
 };
 

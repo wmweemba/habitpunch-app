@@ -32,14 +32,23 @@ export const requestNotificationPermissions = async () => {
 // Schedule daily notification for a habit
 export const scheduleHabitReminder = async (habitId, habitName, time) => {
   try {
+    // First ensure we have permission
+    const hasPermission = await requestNotificationPermissions();
+    if (!hasPermission) {
+      console.warn("Notification permissions not granted");
+      return false;
+    }
+
     // Cancel existing notification for this habit
     await cancelHabitReminder(habitId);
 
     // Parse time (format: "HH:MM")
     const [hours, minutes] = time.split(":").map(Number);
 
+    console.log(`📅 Scheduling reminder for "${habitName}" at ${hours}:${minutes}`);
+
     // Schedule new notification
-    await Notifications.scheduleNotificationAsync({
+    const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
         title: "🔥 Time to Punch!",
         body: `Time to punch your ${habitName} card! Keep the streak going.`,
@@ -54,6 +63,7 @@ export const scheduleHabitReminder = async (habitId, habitName, time) => {
       identifier: `habit_${habitId}`,
     });
 
+    console.log(`✅ Notification scheduled with ID: ${notificationId}`);
     return true;
   } catch (error) {
     console.error("Error scheduling notification:", error);

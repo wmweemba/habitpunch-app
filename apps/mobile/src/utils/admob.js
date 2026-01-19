@@ -129,10 +129,11 @@ export const showRewardedAd = ({ onReward, onError }) => {
       rewardedAd = initializeRewardedAd();
     });
 
-    const unsubscribeError = rewardedAd.addAdEventListener('ad_error', (error) => {
-      console.error('❌ Rewarded ad error:', error);
-      onError && onError(error);
-      reject(error);
+    const unsubscribeError = rewardedAd.addAdEventListener(RewardedAdEventType.ERROR, (error) => {
+      console.error('❌ Rewarded ad failed to load:', error);
+      const errorMsg = `Ad failed to load: ${error.message || 'Unknown error'}`;
+      onError && onError({ message: errorMsg, code: error.code });
+      reject({ message: errorMsg, code: error.code });
       
       // Clean up listeners
       unsubscribeLoaded();
@@ -141,7 +142,29 @@ export const showRewardedAd = ({ onReward, onError }) => {
       unsubscribeError();
     });
 
-    // Load and show the ad
+    // Add timeout for ad loading
+    const timeout = setTimeout(() => {
+      console.error('❌ Rewarded ad loading timeout');
+      const errorMsg = 'Ad loading timeout - please try again';
+      onError && onError({ message: errorMsg, code: 'TIMEOUT' });
+      reject({ message: errorMsg, code: 'TIMEOUT' });
+      
+      // Clean up listeners
+      unsubscribeLoaded();
+      unsubscribeEarned();
+      unsubscribeClosed();
+      unsubscribeError();
+    }, 10000); // 10 second timeout
+
+    // Clear timeout if ad loads
+    const originalLoaded = unsubscribeLoaded;
+    rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      clearTimeout(timeout);
+      originalLoaded();
+    });
+
+    // Load the ad
+    console.log('🔄 Loading rewarded ad...');
     rewardedAd.load();
   });
 };

@@ -81,11 +81,36 @@ export const getRewardedAdUnitId = () => {
 
 // Rewarded Ad Functionality
 let rewardedAd = null;
+let debugMode = __DEV__; // Enable detailed logging in development
+
+// Enhanced error logging for debugging
+const logAdMobError = (error, context) => {
+  console.error(`❌ AdMob Error [${context}]:`, {
+    message: error.message,
+    code: error.code,
+    domain: error.domain,
+    userInfo: error.userInfo,
+    nativeStackAndroid: error.nativeStackAndroid,
+    nativeStackIOS: error.nativeStackIOS,
+    timestamp: new Date().toISOString(),
+    isDevelopment: __DEV__,
+    adUnitId: getRewardedAdUnitId()
+  });
+};
+
+// Debug logging utility
+const debugLog = (message, data = null) => {
+  if (debugMode) {
+    console.log(`🔍 [AdMob Debug] ${message}`, data ? data : '');
+  }
+};
 
 export const initializeRewardedAd = () => {
   const adUnitId = getRewardedAdUnitId();
+  debugLog('Initializing rewarded ad', { adUnitId, isDev: __DEV__ });
   
   if (rewardedAd) {
+    debugLog('Cleaning up existing rewarded ad');
     rewardedAd = null; // Clean up existing ad
   }
   
@@ -94,77 +119,158 @@ export const initializeRewardedAd = () => {
     keywords: ['habits', 'productivity', 'self-improvement']
   });
 
+  debugLog('Rewarded ad created successfully');
   return rewardedAd;
 };
 
 export const showRewardedAd = ({ onReward, onError }) => {
   return new Promise((resolve, reject) => {
+    debugLog('showRewardedAd called');
+    
     if (!rewardedAd) {
+      debugLog('No existing ad, initializing new one');
       rewardedAd = initializeRewardedAd();
     }
 
+    let isResolved = false;
+    let timeout = null;
+    const listeners = [];
+
+    // Helper to clean up all listeners and timeout
+    const cleanup = () => {
+      debugLog('Cleaning up ad listeners and timeout');
+      listeners.forEach(unsubscribe => {
+        try {
+          unsubscribe();
+        } catch (err) {
+          console.warn('Error unsubscribing listener:', err);
+        }
+      });
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+    };
+
+    // Helper to resolve/reject only once
+    const resolveOnce = (result) => {
+      if (!isResolved) {
+        isResolved = true;
+        cleanup();
+        resolve(result);
+      }
+    };
+
+    const rejectOnce = (error) => {
+      if (!isResolved) {
+        isResolved = true;
+        cleanup();
+        reject(error);
+      }
+    };
+
+    // Set up event listeners
     const unsubscribeLoaded = rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      console.log('✅ Rewarded ad loaded successfully');
+      debugLog('✅ Rewarded ad loaded successfully');
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+      debugLog('Showing rewarded ad');
       rewardedAd.show();
     });
+    listeners.push(unsubscribeLoaded);
 
     const unsubscribeEarned = rewardedAd.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
       (reward) => {
-        console.log('🎉 User earned reward:', reward);
+        debugLog('🎉 User earned reward:', reward);
         onReward && onReward(reward);
-        resolve(reward);
+        resolveOnce(reward);
+        // Initialize new ad for next time
+        setTimeout(() => {
+          rewardedAd = initializeRewardedAd();
+        }, 100);
       }
     );
+    listeners.push(unsubscribeEarned);
 
     const unsubscribeClosed = rewardedAd.addAdEventListener(RewardedAdEventType.DISMISSED, () => {
-      console.log('❌ Rewarded ad dismissed');
-      // Clean up listeners
-      unsubscribeLoaded();
-      unsubscribeEarned();
-      unsubscribeClosed();
-      unsubscribeError();
-      
-      // Initialize new ad for next time
-      rewardedAd = initializeRewardedAd();
+      debugLog('❌ Rewarded ad dismissed without reward');
+      if (!isResolved) {
+        // User closed ad without watching - not an error, just no reward
+        cleanup();
+        // Initialize new ad for next time
+        setTimeout(() => {
+          rewardedAd = initializeRewardedAd();
+        }, 100);
+      }
     });
+    listeners.push(unsubscribeClosed);
 
     const unsubscribeError = rewardedAd.addAdEventListener(RewardedAdEventType.ERROR, (error) => {
-      console.error('❌ Rewarded ad failed to load:', error);
-      const errorMsg = `Ad failed to load: ${error.message || 'Unknown error'}`;
-      onError && onError({ message: errorMsg, code: error.code });
-      reject({ message: errorMsg, code: error.code });
+      logAdMobError(error, 'REWARDED_AD_LOAD');
       
-      // Clean up listeners
-      unsubscribeLoaded();
-      unsubscribeEarned();
-      unsubscribeClosed();
-      unsubscribeError();
-    });
-
-    // Add timeout for ad loading
-    const timeout = setTimeout(() => {
-      console.error('❌ Rewarded ad loading timeout');
-      const errorMsg = 'Ad loading timeout - please try again';
-      onError && onError({ message: errorMsg, code: 'TIMEOUT' });
-      reject({ message: errorMsg, code: 'TIMEOUT' });
+      const errorDetails = {
+        message: error.message || 'Unknown AdMob error',
+        code: error.code || 'UNKNOWN_CODE',
+        domain: error.domain,
+        userInfo: error.userInfo,
+        isDevelopment: __DEV__,
+        adUnitId: getRewardedAdUnitId(),
+        timestamp: new Date().toISOString()
+      };
       
-      // Clean up listeners
-      unsubscribeLoaded();
-      unsubscribeEarned();
-      unsubscribeClosed();
-      unsubscribeError();
-    }, 10000); // 10 second timeout
-
-    // Clear timeout if ad loads
-    const originalLoaded = unsubscribeLoaded;
-    rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      clearTimeout(timeout);
-      originalLoaded();
+      debugLog('Detailed error information:', errorDetails);
+      
+      const userFriendlyMsg = `Unable to load rewarded ad. ${errorDetails.message}`;
+      onError && onError(errorDetails);
+      rejectOnce(errorDetails);
+      
+      // Initialize new ad for next attempt
+      setTimeout(() => {
+        rewardedAd = initializeRewardedAd();
+      }, 1000);
     });
+    listeners.push(unsubscribeError);
+
+    // Set up timeout (15 seconds for better debugging)
+    timeout = setTimeout(() => {
+      debugLog('❌ Rewarded ad loading timeout after 15 seconds');
+      const timeoutError = {
+        message: 'Ad loading timeout - please try again',
+        code: 'LOAD_TIMEOUT',
+        timestamp: new Date().toISOString(),
+        adUnitId: getRewardedAdUnitId(),
+        isDevelopment: __DEV__
+      };
+      
+      onError && onError(timeoutError);
+      rejectOnce(timeoutError);
+      
+      // Initialize new ad for next attempt
+      setTimeout(() => {
+        rewardedAd = initializeRewardedAd();
+      }, 1000);
+    }, 15000); // 15 second timeout for better debugging
 
     // Load the ad
-    console.log('🔄 Loading rewarded ad...');
-    rewardedAd.load();
+    debugLog('🔄 Loading rewarded ad...', { adUnitId: getRewardedAdUnitId() });
+    try {
+      rewardedAd.load();
+    } catch (loadError) {
+      debugLog('❌ Error calling rewardedAd.load():', loadError);
+      logAdMobError(loadError, 'LOAD_METHOD_CALL');
+      
+      const loadErrorDetails = {
+        message: `Failed to call load(): ${loadError.message}`,
+        code: 'LOAD_METHOD_ERROR',
+        originalError: loadError,
+        timestamp: new Date().toISOString()
+      };
+      
+      onError && onError(loadErrorDetails);
+      rejectOnce(loadErrorDetails);
+    }
   });
 };

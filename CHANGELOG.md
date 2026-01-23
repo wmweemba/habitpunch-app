@@ -5,6 +5,51 @@ All notable changes to the HabitPunch project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.9] - 2026-01-23
+
+### Fixed - Rewarded Ad Debug Enhancement & Monitoring
+- **Enhanced AdMob Rewarded Ad Error Handling**:
+  - Added comprehensive error logging with full AdMob error details (message, code, domain, userInfo, native stack traces)
+  - Implemented proper event listener cleanup to prevent race conditions
+  - Extended timeout to 15 seconds for better debugging and error analysis
+  - Added step-by-step debug logging for ad initialization and loading process
+  - Fixed event listener memory leaks and improved error recovery
+
+- **Improved Debug Capabilities**:
+  - Added detailed timestamp and environment context to all error logs
+  - Enhanced production vs development mode detection and logging
+  - Implemented safer listener cleanup with error handling
+  - Added Ad Unit ID verification in error logs to ensure correct configuration
+  - Improved one-time resolution pattern to prevent multiple callbacks
+
+- **App Version Update**:
+  - Updated app version from "1.0.0" to "1.0.8" to reflect current production state
+  - Fixed version number display discrepancy in settings
+
+### Technical - Production Monitoring Setup
+- **Debug Session Preparation**:
+  - Enhanced logging will capture exact AdMob error codes and timing in production environment
+  - Added environment detection (development vs production) in error reporting
+  - Improved error context with AdMob domain, userInfo, and platform-specific stack traces
+  - Set up for detailed production debugging once new build is deployed
+
+### Build Status
+- **Build Quota**: EAS free plan quota reached (resets in 8 days - Feb 1, 2026)
+- **Latest Production Build**: `0fef1ec6-e950-445c-8de4-029a19a18a9e` (Version Code: 18) - contains previous critical fixes
+- **Pending Changes**: Enhanced rewarded ad debugging ready for next build cycle
+- **Next Steps**: Deploy enhanced debugging version when build quota resets or upgrade EAS plan
+
+### Developer Experience
+- **Enhanced Error Tracking**: Production rewarded ad failures will now provide detailed diagnostic information
+- **Improved Debugging**: Step-by-step logging for ad loading process troubleshooting
+- **Better Error Recovery**: Fixed listener cleanup and ad reinitialization patterns
+
+### Notes
+- AdMob configuration verified as correct (IDs, domain verification, account status all valid)
+- Issue appears to be code-level event handling rather than AdMob account configuration
+- Enhanced logging will provide exact failure points and error codes for targeted fixes
+- Banner ads working confirms overall AdMob integration is functional
+
 ## [1.0.8] - 2026-01-19
 
 ### Fixed - Critical Monetization Issues
